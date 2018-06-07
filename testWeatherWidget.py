@@ -2,11 +2,12 @@ from WeatherWidget import WeatherWidget
 import pygame
 import os
 def main():
+    demensions = (600,300)
     pygame.init()
     clock = pygame.time.Clock()
-    testScreen = pygame.display.set_mode((500,500))
+    testScreen = pygame.display.set_mode(demensions)
     testScreen.fill((200, 255, 230))
-    weather = WeatherWidget(500,500)
+    weather = WeatherWidget(*demensions, (0,0,0))
     testScreen.blit(weather,(0,0))
     pygame.display.update()
     run = True
