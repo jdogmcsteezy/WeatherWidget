@@ -46,9 +46,13 @@ class WeatherWidget(Surface):
         self.assets_path = path.join(self.dir_path, 'Assets')
         self.fonts_path = path.join(self.assets_path, 'Fonts')
         self.fontFile = ('OpenSans-Regular.ttf', int(height * (35/125)))
-        self.cloudFile = 'Cloud.png'
-        self.rainFile = 'Rain.png'
-        self.sunFile = 'Sun.png'
+        self.cloudFile = 'Cloud@4x.png'
+        self.partlyCloudyFile = 'Cloudy@4x.png'
+        self.cludyNight = 'CloudyNight@4x.png'
+        self.rainFile = 'Rain@4x.png'
+        self.thunderFile = 'ThundertStorm@4x.png'
+        self.sunFile = 'Sun@4x.png'
+        self.nightFile = 'Night@4x.png'
         self.black = (0,0,0)
         self.white = (255,255,255)
         self.fill(bgColor)
@@ -65,8 +69,13 @@ class WeatherWidget(Surface):
         sun = ["sun", "Sun", "Sunny", "sunny", "Clear", "clear"]
         rain = ["Rain", "rain", "Raining", "raining", "drizzle", "Drizzle", "showers", "Showers", "Hail"]
         cloud = ["Cloudy", "cloudy", "overcast", "Overcast", "Clouds", "clouds", "gray", "Gray", "grey", "Grey", "Fog"]
+        thunder = ['ThunderStorms']
+
         for i in my_string.split():
-            if i in cloud:
+            if i in thunder:
+                thunderImage = image.load(path.join(self.assets_path,self.thunderFile))
+                return thunderImage
+            elif i in cloud:
                 cloudimage = image.load(path.join(self.assets_path, self.cloudFile))
                 return cloudimage
             elif i in rain:
@@ -76,17 +85,18 @@ class WeatherWidget(Surface):
                 sunimage = image.load(path.join(self.assets_path, self.sunFile))
                 return sunimage
             else:
-                #self.screen.blit(sunimage, (845, 0))
                 continue
 
     def weatherOut(self):
         try:
-            f = urlopen('http://api.wunderground.com/api/4e96f64459824b58/geolookup/conditions/q/CA/Oroville.json')
+            # Eventually add a night picture for weather.
+            conditions = urlopen('http://api.wunderground.com/api/4e96f64459824b58/geolookup/conditions/q/CA/Oroville.json')
+            #astrology = urlopen('http://api.wunderground.com/api/4e96f64459824b58/astronomy/q/CA/Oroville.json')
         except URLError as e:
             print('URLError = ' + str(e.reason))
             return
         self.w_list = []
-        json_string = f.read()
+        json_string = conditions.read()
         parsed_json = json.loads(json_string.decode())
         # location is list 0
         cityweather = parsed_json['location']['city']
